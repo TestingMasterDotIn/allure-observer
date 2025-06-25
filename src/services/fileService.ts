@@ -110,7 +110,10 @@ const findTestFiles = async (
   return { behaviors, categories, packages, suites, timeline };
 };
 
-export const scanLocalFolder = async (): Promise<{ 
+// Keep a reference to the last selected directory handle
+let lastDirectoryHandle: FileSystemDirectoryHandle | null = null;
+
+export const scanLocalFolder = async (useSavedDir: boolean = false): Promise<{ 
   behaviors: BehaviorsData[]; 
   categories: CategoriesData[];
   packages: PackagesData[];
@@ -122,7 +125,21 @@ export const scanLocalFolder = async (): Promise<{
       throw new Error('File System Access API not supported. This feature requires a modern browser (Chrome, Edge) and HTTPS.');
     }
 
-    const directoryHandle = await window.showDirectoryPicker();
+    let directoryHandle: FileSystemDirectoryHandle;
+    
+    // Use the saved directory handle if requested and available
+    if (useSavedDir && lastDirectoryHandle) {
+      // Just use the saved handle, permissions should remain valid
+      // until the browser tab is closed
+      directoryHandle = lastDirectoryHandle;
+    } else {
+      // Always request a new directory if not using saved one
+      directoryHandle = await window.showDirectoryPicker();
+    }
+    
+    // Save for future use
+    lastDirectoryHandle = directoryHandle;
+    
     const { behaviors: behaviorsFiles, categories: categoriesFiles, packages: packagesFiles, suites: suitesFiles, timeline: timelineFiles } = await findTestFiles(directoryHandle);
     
     console.log(`Found ${behaviorsFiles.length} behaviors.json, ${categoriesFiles.length} categories.json, ${packagesFiles.length} packages.json, ${suitesFiles.length} suites.json, ${timelineFiles.length} timeline.json files`);

@@ -104,7 +104,8 @@ export default function Settings() {
     try {
       if (dataSource.type === 'local') {
         // Load data from local folder using the File System Access API
-        const rawData = await scanLocalFolder();
+        // Pass true to use the saved directory handle if available
+        const rawData = await scanLocalFolder(true);
         
         // Transform the data to match our TestData interface
         const testData = transformAllureData(rawData);
@@ -152,8 +153,8 @@ export default function Settings() {
       parserConfig
     }));
     
-    // Load data from the configured source
-    await loadDataFromSource();
+    // Show success message
+    alert("Settings saved successfully. Click 'Load Data' to load data from the configured source.");
   };
 
   const exportSettings = () => {
