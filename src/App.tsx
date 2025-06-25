@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DataProvider } from "./context/DataContext";
 import { ThemeProviderWrapper } from "./components/ThemeProvider";
 import Layout from "./components/Layout";
@@ -26,7 +26,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <DataProvider>
-          <HashRouter>
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Dashboard />} />
@@ -41,7 +41,7 @@ const App = () => (
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </HashRouter>
+          </BrowserRouter>
         </DataProvider>
       </TooltipProvider>
     </QueryClientProvider>
